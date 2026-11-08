@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Projectile Simulation</title>
+
+    <style>
+
+        body {
+            background-color: #eeeeee;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            margin-top: 25px;
+        }
+
+        #status {
+            margin: 20px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid black;
+        }
+        .card{
+            background-color: transparent;
+            width: 335px;
+            height: 200px;
+            
+        }
+
+        .card:hover{
+            display: block;  
+        }
+         
+        .card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,.card-back{
+            position:absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; 
+            backface-visibility: hidden;
+        }
+
+        .card-inner{
+            position:relative;
+            width:100%;
+            height:100%;
+            text-align: center;
+            transition: transform 1s;
+            tranform-style: preserve-3d;
+        }
+
+        .card-front{
+            background-color: white;
+            color: blue;
+        }
+
+        .card-back{
+            background-color:white;
+            transform: rotateY(180deg);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Projectile Motion Simulation</h1>
+
+    <p id="status">Loading simulation...</p>
+
+    <canvas id="canvas"
+            width="1000"
+            height="500">
+    </canvas>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+
+    <script>
+
+        async function startSimulation() {
+
+            const status =
+                document.getElementById("status");
+
+            const canvas =
+                document.getElementById("canvas");
+
+            try {
+
+                status.textContent = "Loading Python...";
+
+                const pyodide = await loadPyodide();
+
+                // Connect Pygame to browser canvas
+                pyodide.canvas.setCanvas2D(canvas);
+
+                status.textContent = "Loading Pygame...";
+
+                await pyodide.loadPackage("pygame-ce");
+
+                status.textContent = "Installing Pymunk...";
+
+                await pyodide.loadPackage("micropip");
+
+                await pyodide.runPythonAsync(`
+import micropip
+await micropip.install("pymunk==7.3.0")
+                `);
+
+                status.textContent = "Loading projectile simulation...";
+
+                // Load main.py
+                const response = await fetch("./main.py");
+
+                if (!response.ok) {
+                    throw new Error("Could not load main.py");
+                }
+
+                const pythonCode = await response.text();
+
+                status.textContent = "Simulation running!";
+
+                // Execute Python simulation
+                await pyodide.runPythonAsync(pythonCode);
+
+                status.textContent = "Simulation stopped.";
+
+            }
+
+            catch (error) {
+
+                status.textContent =
+                    "Error: " + error.message;
+
+                console.error(error);
+
+            }
+
+        }
+
+        startSimulation();
+
+    </script>
+ 
+<div class="card">
+    <div class ="card-inner">
+        <div class="card-front">
+            <h1>Projectile Motion</h1>
+            <p>QUESTION</p>
+        </div>
+        <div class="card-back">
+            <p>ANSWER</p>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+
+
