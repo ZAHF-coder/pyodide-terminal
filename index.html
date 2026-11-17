@@ -31,47 +31,6 @@
             height: auto;
             border: 1px solid black;
         }
-        .card{
-            background-color: transparent;
-            width: 335px;
-            height: 200px;
-            
-        }
-
-        .card:hover{
-            display: block;  
-        }
-         
-        .card:hover .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-front,.card-back{
-            position:absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden; 
-            backface-visibility: hidden;
-        }
-
-        .card-inner{
-            position:relative;
-            width:100%;
-            height:100%;
-            text-align: center;
-            transition: transform 1s;
-            tranform-style: preserve-3d;
-        }
-
-        .card-front{
-            background-color: white;
-            color: blue;
-        }
-
-        .card-back{
-            background-color:white;
-            transform: rotateY(180deg);
-        }
     </style>
 
 </head>
@@ -156,17 +115,7 @@ await micropip.install("pymunk==7.3.0")
 
     </script>
  
-<div class="card">
-    <div class ="card-inner">
-        <div class="card-front">
-            <h1>Projectile Motion</h1>
-            <p>QUESTION</p>
-        </div>
-        <div class="card-back">
-            <p>ANSWER</p>
-        </div>
-    </div>
-</div>
+
 </body>
 
 </html>
